@@ -1,0 +1,10 @@
+h1 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 50px;
+    color: gold;
+    display: flexbox;
+}
+
+body {
+    background-color: darkseagreen;
+}
