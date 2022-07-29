@@ -7,16 +7,16 @@
 //   .then((data) => {
 //     document.write(JSON.stringify(data));
 //   });
-  
+
 document.getElementById("submit").addEventListener("click", (e) => {
   e.preventDefault();
 
-const userInput = (document
+  const userInput = document
     .querySelector(`[name="donut"]`)
-    .value).toLowerCase();
-const newDonut = {
-  "donut": userInput
-}
+    .value.toLowerCase();
+  const newDonut = {
+    donut: userInput,
+  };
   console.log(newDonut);
   fetch("/api/donutshop", {
     method: "POST",
@@ -29,7 +29,7 @@ const newDonut = {
     .then((res) => {
       return res.json();
     })
-    .then((data) => console.log(data))
+    .then((data) => console.log(JSON.stringify(data)))
     .catch((err) => console.log("Error"));
 });
 
