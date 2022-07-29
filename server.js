@@ -2,7 +2,7 @@ import express from "express";
 import pg from "pg";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 app.use(express.json());
 
@@ -62,9 +62,9 @@ app.get("/api/customers", (req, res, next) => {
 });
 
 app.post("/api/donutshop", (req, res, next) => {
-    const newDonut = req.body.donut;
-    // const newDrink = req.body.drink;
-   
+  const newDonut = req.body.donut;
+  // const newDrink = req.body.drink;
+
   pool
     .query("INSERT INTO donutshop(donut) VALUES($1) RETURNING *;", [newDonut])
     .then((data) => {
