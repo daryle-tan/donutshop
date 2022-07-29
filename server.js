@@ -1,5 +1,19 @@
 import express from "express";
 import pg from "pg";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+// const dbConfig = {
+//   connectionString: process.env.DATABASE_URL,
+//   ...(process.env.NODE_ENV === "production"
+//     ? {
+//         ssl: {
+//           rejectUnauthorized: false,
+//         },
+//       }
+//     : {}),
+// };
 
 const app = express();
 const PORT = process.env.PORT;
@@ -7,7 +21,14 @@ const PORT = process.env.PORT;
 app.use(express.json());
 
 const pool = new pg.Pool({
-  database: "donutshop",
+  connectionString: process.env.DATABASE_URL,
+  ...(process.env.NODE_ENV === "production"
+    ? {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      }
+    : {}),
 });
 
 app.use(express.static("static"));
