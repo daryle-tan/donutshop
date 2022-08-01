@@ -4,17 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// const dbConfig = {
-//   connectionString: process.env.DATABASE_URL,
-//   ...(process.env.NODE_ENV === "production"
-//     ? {
-//         ssl: {
-//           rejectUnauthorized: false,
-//         },
-//       }
-//     : {}),
-// };
-
 const app = express();
 const PORT = process.env.PORT;
 
@@ -38,7 +27,6 @@ app.get("/api/donutshop", (req, res, next) => {
     .query("SELECT * FROM donutshop")
     .then((result) => {
       res.send(result.rows);
-      //   console.log(result.rows);
     })
     .catch(next);
 });
@@ -84,7 +72,6 @@ app.get("/api/customers", (req, res, next) => {
 
 app.post("/api/donutshop", (req, res, next) => {
   const newDonut = req.body.donut;
-  // const newDrink = req.body.drink;
 
   pool
     .query("INSERT INTO donutshop(donut) VALUES($1) RETURNING *;", [newDonut])
@@ -92,6 +79,41 @@ app.post("/api/donutshop", (req, res, next) => {
       if (req.body) {
         res.send(data);
         console.log(data);
+      } else {
+        res.sendStatus(400);
+      }
+    })
+    .catch(next);
+});
+
+app.patch("/api/donutshop/:id", (req, res, next) => {
+  const index = req.params.id;
+  const body = req.body;
+  console.log(body);
+  pool
+    .query(
+      `UPDATE donutshop SET donut = COALESCE($1, donut),
+                            drink = COALESCE($2, drink),
+                            price = COALESCE($3, price),
+                            price = COALESCE($4, days_open),
+                            price = COALESCE($5, supplier),
+                            price = COALESCE($6, employee),
+                        WHERE id = COALESCE($7, id)
+                        RETURNING *;`,
+      [
+        body.donut,
+        body.drink,
+        body.price,
+        body.days_open,
+        body.suppler,
+        body.employee,
+        index,
+      ]
+    )
+    .then((data) => {
+      if (body) {
+        console.log("here");
+        res.send(data.rows);
       } else {
         res.sendStatus(400);
       }
@@ -109,3 +131,14 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`listening to ${PORT}`);
 });
+
+// const dbConfig = {
+//   connectionString: process.env.DATABASE_URL,
+//   ...(process.env.NODE_ENV === "production"
+//     ? {
+//         ssl: {
+//           rejectUnauthorized: false,
+//         },
+//       }
+//     : {}),
+// };
